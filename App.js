@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Button, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Button, Image, TextInput } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Camera,
@@ -7,13 +7,15 @@ import {
   CameraRoll
 } from 'react-native-vision-camera';
 
-
+const API = 'https://api.bytescale.com/v2/accounts/kW15c2A/uploads/form_data'
+const TOKEN = "Bearer public_kW15c2ABxFwnD3VMy73bF2tHqc49"
 
 export default function App() {
   const camera = useRef(null);
   const [cameraPermission, setCameraPermission] = useState();
   const [photoPath, setPhotoPath] = useState();
-
+  const [api, onChangeApi] = React.useState(API);
+  const [token, onChangeToken] = React.useState(TOKEN);
   const devices = Camera.getAvailableCameraDevices()
   const cameraDevice = devices.find((d) => d.position === 'back')
 
@@ -30,8 +32,8 @@ export default function App() {
         flash: 'off',
       });
       const uri = "file://" + photo.path
-      // console.log(uri)
       const data = new FormData();
+      // data.append("api", api)
       data.append('file', {
         uri: uri,
         type: "image/jpeg",
@@ -39,12 +41,12 @@ export default function App() {
       });
 
       let res = await fetch(
-        'https://api.bytescale.com/v2/accounts/kW15c2A/uploads/form_data',
+        api,
         {
           method: 'POST',
           body: data,
           headers: {
-            "Authorization": "Bearer public_kW15c2ABxFwnD3VMy73bF2tHqc49",
+            "Authorization": token,
             'Content-Type': 'multipart/form-data'
           }
         }
@@ -84,9 +86,9 @@ export default function App() {
           title="Press me"
           onPress={handleTakePhoto}
         /> */}
-        {photoPath && (
+        {/* {photoPath && (
           <Image style={styles.image} source={{ uri: photoPath }} />
-        )}
+        )} */}
       </View>
     );
   };
@@ -95,6 +97,16 @@ export default function App() {
     <View style={styles.container}>
       {/* <Text>{cameraPermission}</Text> */}
       {renderTakingPhoto()}
+      <TextInput
+        style={styles.input}
+        onChangeText={onChangeApi}
+        value={api}
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={onChangeToken}
+        value={token}
+      />
     </View>
   );
 }
@@ -179,5 +191,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     bottom: -80,
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
   },
 });
