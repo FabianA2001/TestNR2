@@ -32,8 +32,8 @@ export default function App() {
 
 
       const data = new FormData();
-      // data.append('name', 'Image Upload');
-      data.append('file_attachment', photo);
+      data.append('name', 'Text inhalt');
+      // data.append('file_attachment', photo);
       // Please change file upload URL
       let res = await fetch(
         'https://api.bytescale.com/v2/accounts/kW15c2A/uploads/form_data',
@@ -41,8 +41,7 @@ export default function App() {
           method: 'post',
           body: data,
           headers: {
-            "Authorization": "Bearer public_kW15c2ABxFwnD3VMy73bF2tHqc49",
-            'Content-Type': 'multipart/form-data; '
+            "Authorization": "Bearer public_kW15c2ABxFwnD3VMy73bF2tHqc49"
           }
         }
       );
