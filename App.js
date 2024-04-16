@@ -29,7 +29,30 @@ export default function App() {
         flash: 'off',
       });
       console.log(photo)
-      setPhotoPath(photo.path);
+
+
+      const data = new FormData();
+      // data.append('name', 'Image Upload');
+      data.append('file_attachment', photo);
+      // Please change file upload URL
+      let res = await fetch(
+        'https://api.bytescale.com/v2/accounts/kW15c2A/uploads/form_data',
+        {
+          method: 'post',
+          body: data,
+          headers: {
+            "Authorization": "Bearer public_kW15c2ABxFwnD3VMy73bF2tHqc49",
+            'Content-Type': 'multipart/form-data; '
+          }
+        }
+      );
+      console.log(res)
+      let responseJson = await res.json();
+      if (responseJson.status == 1) {
+        console.log("Upload fertig");
+      }
+
+
     } catch (e) {
       console.log(e);
     }
@@ -51,13 +74,13 @@ export default function App() {
           isActive
           photo
         />
-        {/* <TouchableOpacity style={styles.btn} onPress={handleTakePhoto}>
+        <TouchableOpacity style={styles.btn} onPress={handleTakePhoto}>
           <Text style={styles.btnText}>Take Photo</Text>
-        </TouchableOpacity> */}
-        <Button
+        </TouchableOpacity>
+        {/* <Button
           title="Press me"
           onPress={handleTakePhoto}
-        />
+        /> */}
         {photoPath && (
           <Image style={styles.image} source={{ uri: photoPath }} />
         )}
