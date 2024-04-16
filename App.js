@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Camera,
   useCameraDevices,
+  CameraRoll
 } from 'react-native-vision-camera';
 
 
@@ -28,20 +29,23 @@ export default function App() {
       const photo = await camera.current.takePhoto({
         flash: 'off',
       });
-      console.log(photo)
-
-
+      const uri = "file://" + photo.path
+      // console.log(uri)
       const data = new FormData();
-      data.append('name', 'Text inhalt');
-      // data.append('file_attachment', photo);
-      // Please change file upload URL
+      data.append('file', {
+        uri: uri,
+        type: "image/jpeg",
+        name: "Test.jpg"
+      });
+
       let res = await fetch(
         'https://api.bytescale.com/v2/accounts/kW15c2A/uploads/form_data',
         {
-          method: 'post',
+          method: 'POST',
           body: data,
           headers: {
-            "Authorization": "Bearer public_kW15c2ABxFwnD3VMy73bF2tHqc49"
+            "Authorization": "Bearer public_kW15c2ABxFwnD3VMy73bF2tHqc49",
+            'Content-Type': 'multipart/form-data'
           }
         }
       );
@@ -53,7 +57,7 @@ export default function App() {
 
 
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
